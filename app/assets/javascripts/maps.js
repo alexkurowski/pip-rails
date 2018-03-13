@@ -53,14 +53,19 @@ window.addEventListener('load', function () {
   }
 
   function addDraggableMarker (lat, lng) {
-    if (newMarker) return;
-
-    newMarker = gmapHandler.addMarkers([{
-      lat: lat,
-      lng: lng
-    }], {
-      draggable: true
-    });
+    if (newMarker) {
+      newMarker[0].serviceObject.setPosition({
+        lat: lat,
+        lng: lng
+      });
+    } else {
+      newMarker = gmapHandler.addMarkers([{
+        lat: lat,
+        lng: lng
+      }], {
+        draggable: true
+      });
+    }
   }
 
   function showOverlay () {
