@@ -7,9 +7,11 @@ window.addEventListener('load', function () {
   var styles = [{
     featureType: 'poi',
     elementType: 'labels',
-    stylers: [
-      { visibility: 'off' }
-    ]
+    stylers: [{ visibility: 'off' }]
+  }, {
+    featureType: 'transit',
+    elementType: 'labels',
+    stylers: [{ visibility: 'off' }]
   }];
 
   var handler = Gmaps.build('Google');
