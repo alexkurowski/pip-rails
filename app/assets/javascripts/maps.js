@@ -1,8 +1,13 @@
 window.addEventListener('load', function () {
   var mapId = "gmap";
 
-  var mapExists = document.getElementById(mapId);
-  if (!mapExists) return;
+  var mapEl = document.getElementById(mapId);
+  if (!mapEl) return;
+
+  if (!navigator.geolocation) {
+    mapEl.innerHTML = "<div class='geolocation-error'>Geolocation is not supported by your browser</div>";
+    return;
+  }
 
   var styles = [{
     featureType: 'poi',
@@ -15,7 +20,7 @@ window.addEventListener('load', function () {
   }];
 
   var handler = Gmaps.build('Google');
-  var map = handler.buildMap(
+  var gmap = handler.buildMap(
     {
       provider: {
         disableDefaultUI: true,
@@ -28,6 +33,8 @@ window.addEventListener('load', function () {
       }
     },
     function () {
+      window.map = gmap.serviceObject;
+
       navigator
         .geolocation
         .getCurrentPosition(function (position) {
@@ -36,7 +43,7 @@ window.addEventListener('load', function () {
             lng: position.coords.longitude
           };
 
-          map.serviceObject.setCenter(center);
+          map.setCenter(center);
         });
     }
   );
