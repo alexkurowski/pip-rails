@@ -15,12 +15,47 @@ window.addEventListener('load', function () {
   /*
    * Helper functions
    */
+  var markers = [];
   var newMarker = null;
+  var loadingMarkersTimeout = null;
+  var loadMarkersDelay = 500;
 
-  function addDraggableMarker (handler, lat, lng) {
+  function loadMarkers () {
+    var data = map.getBounds().toJSON();
+
+    Rails.ajax({
+      type: 'POST',
+      url: '/potholes/in_bounds',
+      data: $.param(data),
+      success: function (response) {
+        var data = JSON.parse(response);
+
+        // Remove existing markers
+        markers.forEach(function (marker) {
+          marker.serviceObject.setMap(null);
+        });
+        markers = [];
+
+        // Load new markers
+        var markersToAdd = data.map(function (pothole) {
+          return {
+            lat: pothole[0],
+            lng: pothole[1]
+          }
+        });
+
+        markers = gmapHandler.addMarkers(markersToAdd);
+      },
+      error: function (response) {
+        console.log("Error occured while retrieving pothole records", response);
+      }
+    });
+  }
+
+  function addDraggableMarker (lat, lng) {
     if (newMarker) return;
 
-    newMarker = handler.addMarkers([{
+    newMarker = gmapHandler.addMarkers([{
       lat: lat,
       lng: lng
     }], {
@@ -55,8 +90,8 @@ window.addEventListener('load', function () {
     stylers: [{ visibility: 'off' }]
   }];
 
-  var handler = Gmaps.build('Google');
-  var gmap = handler.buildMap(
+  window.gmapHandler = Gmaps.build('Google');
+  var gmap = gmapHandler.buildMap(
     {
       provider: {
         disableDefaultUI: true,
@@ -81,17 +116,26 @@ window.addEventListener('load', function () {
           };
 
           map.setCenter(center);
+          loadMarkers();
         });
+
+      // Update pothole markers on viewport change
+      map.addListener('bounds_changed', function () {
+        if (loadingMarkersTimeout)
+          clearTimeout(loadingMarkersTimeout);
+
+        loadingMarkersTimeout =
+          setTimeout(loadMarkers, loadMarkersDelay);
+      });
 
       // Create a draggable marker on click
       map.addListener('click', function (event) {
         addDraggableMarker(
-          handler,
           event.latLng.lat(),
           event.latLng.lng()
         );
         showOverlay();
-      })
+      });
     }
   );
 
@@ -122,7 +166,7 @@ window.addEventListener('load', function () {
             hideOverlay();
           },
           error: function (response) {
-            console.log("Error occured while creating a pothole record");
+            console.log("Error occured while creating a pothole record", response);
           }
         });
       });
