@@ -101,6 +101,13 @@ window.addEventListener('load', function () {
     }
   }
 
+  function removeDraggableMarker () {
+    if (newMarker) {
+      newMarker.serviceObject.setMap(null);
+      newMarker = null;
+    }
+  }
+
   function showOverlay () {
     document
       .querySelector('.gmap-overlay')
@@ -186,11 +193,11 @@ window.addEventListener('load', function () {
       node.addEventListener('click', function (event) {
         event.preventDefault();
 
-        var marker = newMarker.serviceObject;
+        var position = newMarker.serviceObject.position;
         var data = {
           pothole: {
-            latitude:  marker.position.lat(),
-            longitude: marker.position.lng(),
+            latitude:  position.lat(),
+            longitude: position.lng(),
           }
         };
 
@@ -199,8 +206,7 @@ window.addEventListener('load', function () {
           url: '/potholes',
           data: $.param(data),
           success: function (response) {
-            marker.setMap(null);
-            newMarker = null;
+            removeDraggableMarker();
             hideOverlay();
             loadMarkers();
           },
@@ -210,4 +216,13 @@ window.addEventListener('load', function () {
         });
       });
     });
+
+  window.addEventListener('keydown', function (event) {
+    if (event.key == 'Escape' || event.keyCode == 27) {
+      if (newMarker) {
+        removeDraggableMarker();
+        hideOverlay();
+      }
+    }
+  });
 })
