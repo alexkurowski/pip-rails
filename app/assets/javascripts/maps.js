@@ -87,7 +87,7 @@ window.addEventListener('load', function () {
 
   function addDraggableMarker (lat, lng) {
     if (newMarker) {
-      newMarker[0].serviceObject.setPosition({
+      newMarker.serviceObject.setPosition({
         lat: lat,
         lng: lng
       });
@@ -186,7 +186,7 @@ window.addEventListener('load', function () {
       node.addEventListener('click', function (event) {
         event.preventDefault();
 
-        var marker = newMarker[0].serviceObject;
+        var marker = newMarker.serviceObject;
         var data = {
           pothole: {
             latitude:  marker.position.lat(),
@@ -199,9 +199,10 @@ window.addEventListener('load', function () {
           url: '/potholes',
           data: $.param(data),
           success: function (response) {
-            marker.setDraggable(false);
+            marker.setMap(null);
             newMarker = null;
             hideOverlay();
+            loadMarkers();
           },
           error: function (response) {
             console.log("Error occured while creating a pothole record", response);
