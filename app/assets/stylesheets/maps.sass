@@ -5,10 +5,31 @@
   right: 0
   bottom: 0
 
-#gmap
-  width: 100%
-  height: 100%
+  #gmap
+    width: 100%
+    height: 100%
+    z-index: 0
 
-.geolocation-error
-  padding: 2rem
-  text-align: center
+  .gmap-overlay
+    position: fixed
+    z-index: 100
+    opacity: 1
+    transition: opacity .3s
+
+    &.hidden
+      opacity: 0
+      pointer-events: none
+
+    .add-pothole
+      position: fixed
+      right: 3rem
+      bottom: 1.5rem
+      font-size: .8rem
+
+      .big-icon
+        text-align: center
+        margin-bottom: .5rem
+
+  .geolocation-error
+    padding: 2rem
+    text-align: center
