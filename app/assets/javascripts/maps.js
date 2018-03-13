@@ -29,22 +29,55 @@ window.addEventListener('load', function () {
       data: $.param(data),
       success: function (response) {
         var data = JSON.parse(response);
-
-        // Remove existing markers
-        markers.forEach(function (marker) {
-          marker.serviceObject.setMap(null);
-        });
-        markers = [];
-
-        // Load new markers
-        var markersToAdd = data.map(function (pothole) {
+        var potholes = data.map(function (pothole) {
           return {
-            lat: pothole[0],
-            lng: pothole[1]
+            lat: pothole.lat,
+            lng: pothole.lng,
+            infowindow: "<div class='info-btn'>Still Here</div>" +
+                        "<div class='info-btn'>Pothole Fixed</div>",
+
+            id: pothole.id,
+            label: pothole.label,
           }
         });
 
-        markers = gmapHandler.addMarkers(markersToAdd);
+        var oldMarkerIds =
+          markers.map(function (marker) {
+            return marker.id;
+          });
+
+        var newMarkerIds =
+          potholes.map(function (pothole) {
+            return pothole.id;
+          });
+
+        // Remove markers that are out of bounds
+        markers.forEach(function (marker, index) {
+          if ( !newMarkerIds.includes(marker.id) ) {
+            marker.serviceObject.setMap(null);
+            markers[index] = null;
+          }
+        });
+
+        var markersToAdd =
+          potholes.filter(function (pothole) {
+            return !oldMarkerIds.includes(pothole.id);
+          });
+
+        // Create new markers
+        var addedMarkers = gmapHandler.addMarkers(markersToAdd);
+        addedMarkers.forEach(function (marker, index) {
+          marker.id = markersToAdd[index].id;
+          marker.serviceObject.setLabel(markersToAdd[index].label);
+        });
+
+        // Update markers list
+        markers =
+          markers
+            .filter(function (marker) {
+              return marker;
+            })
+            .concat(addedMarkers);
       },
       error: function (response) {
         console.log("Error occured while retrieving pothole records", response);
@@ -59,10 +92,10 @@ window.addEventListener('load', function () {
         lng: lng
       });
     } else {
-      newMarker = gmapHandler.addMarkers([{
+      newMarker = gmapHandler.addMarker({
         lat: lat,
         lng: lng
-      }], {
+      }, {
         draggable: true
       });
     }
