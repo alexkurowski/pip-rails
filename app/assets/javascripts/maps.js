@@ -95,6 +95,7 @@ window.addEventListener('load', function () {
             label: {
               text: pothole.label,
               color: 'white',
+              fontSize: '13px',
               fontWeight: 'bold'
             }
           }
@@ -152,7 +153,7 @@ window.addEventListener('load', function () {
     }
   }
 
-  function addDraggableMarker (lat, lng) {
+  function createNewMarker (lat, lng) {
     if (newMarker) {
       newMarker.serviceObject.setPosition({
         lat: lat,
@@ -166,17 +167,44 @@ window.addEventListener('load', function () {
         draggable: true
       });
 
+      newMarker.serviceObject.addListener('click', function () {
+        submitNewMarker();
+      });
+
       mapOverlayEl.classList.add('placing-new-marker');
     }
   }
 
-  function removeDraggableMarker () {
+  function removeNewMarker () {
     if (newMarker) {
       removeMarker(newMarker);
       newMarker = null;
 
       mapOverlayEl.classList.remove('placing-new-marker');
     }
+  }
+
+  function submitNewMarker () {
+    var position = newMarker.serviceObject.position;
+    var data = {
+      pothole: {
+        latitude:  position.lat(),
+        longitude: position.lng(),
+      }
+    };
+
+    Rails.ajax({
+      type: 'POST',
+      url: '/potholes',
+      data: $.param(data),
+      success: function (response) {
+        removeNewMarker();
+        loadMarkers();
+      },
+      error: function (response) {
+        console.log("Error occured while creating a pothole record", response);
+      }
+    });
   }
 
   /*
@@ -245,7 +273,7 @@ window.addEventListener('load', function () {
 
       // Create a draggable marker on click
       map.addListener('click', function (event) {
-        addDraggableMarker(
+        createNewMarker(
           event.latLng.lat(),
           event.latLng.lng()
         );
@@ -259,47 +287,26 @@ window.addEventListener('load', function () {
   $('.add-pothole-new').on('click', function (event) {
     event.preventDefault();
 
-    addDraggableMarker(
+    createNewMarker(
       map.center.lat(),
       map.center.lng()
     );
   });
 
-  $('.add-pothole-cancel').on('click', function (event) {
-    event.preventDefault();
-
-    removeDraggableMarker();
-  });
-
   $('.add-pothole-submit').on('click', function (event) {
     event.preventDefault();
+    submitNewMarker();
+  });
 
-    var position = newMarker.serviceObject.position;
-    var data = {
-      pothole: {
-        latitude:  position.lat(),
-        longitude: position.lng(),
-      }
-    };
-
-    Rails.ajax({
-      type: 'POST',
-      url: '/potholes',
-      data: $.param(data),
-      success: function (response) {
-        removeDraggableMarker();
-        loadMarkers();
-      },
-      error: function (response) {
-        console.log("Error occured while creating a pothole record", response);
-      }
-    });
+  $('.add-pothole-cancel').on('click', function (event) {
+    event.preventDefault();
+    removeNewMarker();
   });
 
   $(window).on('keydown', function (event) {
     if (event.key == 'Escape' || event.keyCode == 27) {
       if (newMarker) {
-        removeDraggableMarker();
+        removeNewMarker();
       }
     }
   });
