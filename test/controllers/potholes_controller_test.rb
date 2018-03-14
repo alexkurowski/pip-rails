@@ -36,6 +36,35 @@ class PotholesControllerTest < ActionDispatch::IntegrationTest
     assert_not pothole_ids.include? outside2.id
   end
 
+  test "#update" do
+    bounds  = generate_bounds
+    unfixed = Pothole.create generate_point_inside_bounds bounds
+    fixed   = Pothole.create generate_point_inside_bounds bounds
+
+    assert fixed.fixed_at.nil?
+
+    put potholes_url,
+      params: {
+        pothole: {
+          id: fixed.id,
+          fixed_at: Time.now
+        }
+      }
+    assert_response :success
+
+    assert_not fixed.reload.fixed_at.nil?
+
+    post potholes_in_bounds_url,
+      params: bounds
+    assert_response :success
+
+    potholes = JSON.parse response.body
+    pothole_ids = potholes.map { |pothole| pothole['id'] }
+
+    assert pothole_ids.include? unfixed.id
+    assert_not pothole_ids.include? fixed.id
+  end
+
   private
 
     BOUNDS_SIZE = 0.1
