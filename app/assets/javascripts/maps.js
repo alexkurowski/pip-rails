@@ -79,6 +79,15 @@ window.addEventListener('load', function () {
         return mapEl.dataset['iconRed-' + alertLevel];
     }
 
+    var getInfowindow = function (pothole) {
+      if (pothole.fixed) {
+        return undefined;
+      } else {
+        return "<div class='info-btn' data-not-fixed>Still Here</div>" +
+               "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>";
+      }
+    }
+
     return JSON
       .parse(data)
       .map(function (pothole) {
@@ -90,8 +99,7 @@ window.addEventListener('load', function () {
             width: 64,
             height: 43
           },
-          infowindow: "<div class='info-btn' data-not-fixed>Still Here</div>" +
-                      "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>",
+          infowindow: getInfowindow(pothole),
 
           id: pothole.id,
           label: {
