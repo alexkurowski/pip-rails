@@ -26,7 +26,9 @@ class Pothole < ApplicationRecord
   end
 
   def time_since_created
-    time = (Time.now - created_at).to_i.round
+    end_time = fixed_at || Time.now
+
+    time = (end_time - created_at).to_i.round
     days = time / 1.day
     hours = ( time - days * 1.day ) / 1.hour
     minutes = ( time - days * 1.day - hours * 1.hour ) / 1.minute
