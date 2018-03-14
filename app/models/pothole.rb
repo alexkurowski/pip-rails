@@ -1,4 +1,8 @@
+require 'concerns/TimeParser'
+
 class Pothole < ApplicationRecord
+  include ::TimeParser
+
   acts_as_mappable lat_column_name: :latitude,
                    lng_column_name: :longitude
 
@@ -41,11 +45,11 @@ class Pothole < ApplicationRecord
 
   def alert_level
     case
-    when created_at < 3.months.ago
+    when created_at < ( parse_time Settings.alert_levels[4] ).ago
       4
-    when created_at < 2.month.ago
+    when created_at < ( parse_time Settings.alert_levels[3] ).ago
       3
-    when created_at < 1.month.ago
+    when created_at < ( parse_time Settings.alert_levels[2] ).ago
       2
     else
       1
