@@ -13,6 +13,7 @@ window.addEventListener('load', function () {
   var newMarker = null;
   var loadingMarkersTimeout = null;
   var loadMarkersDelay = 500;
+  var showFixedPotholes = false;
 
   /*
    * Marker context menu actions
@@ -70,36 +71,49 @@ window.addEventListener('load', function () {
     loadMarkers();
   }
 
+  function parsePotholes (data) {
+    var getIcon = function (alertLevel, fixed) {
+      if (fixed)
+        return mapEl.dataset.iconGreen;
+      else
+        return mapEl.dataset['iconRed-' + alertLevel];
+    }
+
+    return JSON
+      .parse(data)
+      .map(function (pothole) {
+        return {
+          lat: pothole.lat,
+          lng: pothole.lng,
+          picture: {
+            url: getIcon(pothole.alertLevel, pothole.fixed),
+            width: 64,
+            height: 43
+          },
+          infowindow: "<div class='info-btn' data-not-fixed>Still Here</div>" +
+                      "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>",
+
+          id: pothole.id,
+          label: {
+            text: pothole.label,
+            color: 'white',
+            fontSize: '13px',
+            fontWeight: 'bold'
+          }
+        }
+      })
+  }
+
   function loadMarkers () {
     var data = map.getBounds().toJSON();
+    data.fixed = showFixedPotholes;
 
     Rails.ajax({
       type: 'POST',
       url: '/potholes/in_bounds',
       data: $.param(data),
       success: function (response) {
-        var data = JSON.parse(response);
-        var potholes = data.map(function (pothole) {
-          return {
-            lat: pothole.lat,
-            lng: pothole.lng,
-            picture: {
-              url: mapEl.dataset.icon,
-              width: 64,
-              height: 43
-            },
-            infowindow: "<div class='info-btn' data-not-fixed>Still Here</div>" +
-                        "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>",
-
-            id: pothole.id,
-            label: {
-              text: pothole.label,
-              color: 'white',
-              fontSize: '13px',
-              fontWeight: 'bold'
-            }
-          }
-        });
+        var potholes = parsePotholes(response);
 
         var oldMarkerIds =
           markers.map(function (marker) {
@@ -285,6 +299,11 @@ window.addEventListener('load', function () {
   /*
    * Initialize buttons functionality
    */
+  $('#show-fixed-toggle').on('change', function (event) {
+    showFixedPotholes = !showFixedPotholes;
+    loadMarkers();
+  });
+
   $('.add-pothole-new').on('click', function (event) {
     event.preventDefault();
 

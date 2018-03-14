@@ -1,6 +1,11 @@
 .gmap
   #gmap [
-    data-icon='#{ asset_url 'icon-square-blue.png' }'
+    data-icon-blue='#{ asset_url 'icon-square-blue.png' }'
+    data-icon-green='#{ asset_url 'icon-square-green.png' }'
+    data-icon-red-1='#{ asset_url 'icon-square-red-1.png' }'
+    data-icon-red-2='#{ asset_url 'icon-square-red-2.png' }'
+    data-icon-red-3='#{ asset_url 'icon-square-red-3.png' }'
+    data-icon-red-4='#{ asset_url 'icon-square-red-4.png' }'
     data-fallback-lat='#{ @fallback_location&.lat || -28.540 }'
     data-fallback-lng='#{ @fallback_location&.lng || 153.544 }'
   ]
@@ -8,7 +13,7 @@
   .gmap-overlay.hidden
     .show-fixed-toggle-container
       span = t 'show_fixed_toggle'
-      input#show-fixed-toggle.show-fixed-toggle.tgl.tgl-ios type="checkbox"
+      input#show-fixed-toggle.tgl.tgl-ios type="checkbox"
       label.tgl-btn for="show-fixed-toggle"
 
     .add-pothole-buttons

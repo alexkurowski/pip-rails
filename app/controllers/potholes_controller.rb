@@ -1,6 +1,8 @@
 class PotholesController < ApplicationController
   def in_bounds
-    @potholes = Pothole.markers_in_bounds in_bounds_params
+    @potholes = Pothole
+      .excluding_fixed(params[:fixed] == 'false')
+      .markers_in_bounds(in_bounds_params)
     render plain: @potholes.to_json
   end
 
