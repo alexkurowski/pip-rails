@@ -22,17 +22,20 @@ class Pothole < ApplicationRecord
           'lat': pothole.latitude,
           'lng': pothole.longitude,
           'category': pothole.category,
-          'label': pothole.time_since_created,
+          'label': pothole.time_unfixed_label,
           'alertLevel': pothole.alert_level,
           'fixed': !pothole.fixed_at.nil?
         }
       end
   end
 
-  def time_since_created
+  def time_unfixed
     end_time = fixed_at || Time.now
+    end_time - created_at
+  end
 
-    time = (end_time - created_at).to_i.round
+  def time_unfixed_label
+    time = time_unfixed.to_i.round
     days = time / 1.day
     hours = ( time - days * 1.day ) / 1.hour
     minutes = ( time - days * 1.day - hours * 1.hour ) / 1.minute
@@ -44,12 +47,14 @@ class Pothole < ApplicationRecord
   end
 
   def alert_level
+    unfixed = time_unfixed
+
     case
-    when created_at < ( parse_time Settings.alert_levels[4] ).ago
+    when unfixed > parse_time(Settings.alert_levels[4])
       4
-    when created_at < ( parse_time Settings.alert_levels[3] ).ago
+    when unfixed > parse_time(Settings.alert_levels[3])
       3
-    when created_at < ( parse_time Settings.alert_levels[2] ).ago
+    when unfixed > parse_time(Settings.alert_levels[2])
       2
     else
       1

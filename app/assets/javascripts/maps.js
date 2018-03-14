@@ -74,7 +74,7 @@ window.addEventListener('load', function () {
   function parsePotholes (data) {
     var getIcon = function (alertLevel, fixed) {
       if (fixed)
-        return mapEl.dataset.iconGreen;
+        return mapEl.dataset['iconGreen-' + alertLevel];
       else
         return mapEl.dataset['iconRed-' + alertLevel];
     }
