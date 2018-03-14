@@ -1,5 +1,8 @@
 .gmap
-  #gmap
+  #gmap [
+    data-fallback-lat='#{ @fallback_location&.lat || -28.540 }'
+    data-fallback-lng='#{ @fallback_location&.lng || 153.544 }'
+  ]
 
   .gmap-overlay.hidden
     .add-pothole-buttons

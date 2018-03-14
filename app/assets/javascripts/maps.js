@@ -2,17 +2,17 @@ window.addEventListener('load', function () {
   var mapId = "gmap";
 
   /*
-   * Ensure we have a #gmap element and are able to work with it
+   * Ensure we have a #gmap element
    */
   var mapEl = document.getElementById(mapId);
   var mapOverlayEl = document.querySelector('.gmap .gmap-overlay');
-
   if (!mapEl) return;
 
-  if (!navigator.geolocation) {
-    mapEl.innerHTML = "<div class='geolocation-error'>Geolocation is not supported by your browser</div>";
-    return;
-  }
+
+  var markers = [];
+  var newMarker = null;
+  var loadingMarkersTimeout = null;
+  var loadMarkersDelay = 500;
 
   /*
    * Marker context menu actions
@@ -62,10 +62,13 @@ window.addEventListener('load', function () {
   /*
    * Helper functions
    */
-  var markers = [];
-  var newMarker = null;
-  var loadingMarkersTimeout = null;
-  var loadMarkersDelay = 500;
+  function moveViewport (lat, lng) {
+    map.setCenter({
+      lat: +lat,
+      lng: +lng
+    });
+    loadMarkers();
+  }
 
   function loadMarkers () {
     var data = map.getBounds().toJSON();
@@ -199,17 +202,28 @@ window.addEventListener('load', function () {
       mapOverlayEl.classList.remove('hidden');
 
       // Move viewport to visitor's geo location
-      navigator
-        .geolocation
-        .getCurrentPosition(function (position) {
-          var center = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-
-          map.setCenter(center);
-          loadMarkers();
-        });
+      if (navigator.geolocation) {
+        navigator
+          .geolocation
+          .getCurrentPosition(
+            function (position) {
+              moveViewport(
+                position.coords.latitude,
+                position.coords.longitude
+              );
+            },
+            function (error) {
+              moveViewport(
+                mapEl.dataset.fallbackLat,
+                mapEl.dataset.fallbackLng
+              );
+            });
+      } else {
+        moveViewport(
+          mapEl.dataset.fallbackLat,
+          mapEl.dataset.fallbackLng
+        );
+      }
 
       // Update pothole markers on viewport change
       map.addListener('bounds_changed', function () {
