@@ -23,6 +23,9 @@ class Pothole < ApplicationRecord
     hours = ( time - days * 1.day ) / 1.hour
     minutes = ( time - days * 1.day - hours * 1.hour ) / 1.minute
 
-    "%02d:%02d:%02d" % [days, hours, minutes]
+    if days <= 99
+    then "%02d:%02d:%02d" % [days, hours, minutes]
+    else "%d days" % days
+    end
   end
 end
