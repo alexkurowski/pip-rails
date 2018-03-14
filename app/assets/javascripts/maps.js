@@ -166,8 +166,9 @@ window.addEventListener('load', function () {
       }, {
         draggable: true
       });
+      newMarker.panTo = function () {};
 
-      newMarker.serviceObject.addListener('click', function () {
+      newMarker.serviceObject.addListener('dblclick', function () {
         submitNewMarker();
       });
 
