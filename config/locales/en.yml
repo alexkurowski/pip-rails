@@ -1,2 +1,5 @@
 en:
-  add_pothole: Add Pothole
+  add_pothole:
+    new: Add Pothole
+    submit: Place it!
+    cancel: Cancel

@@ -10,6 +10,9 @@ class PotholesController < ApplicationController
   end
 
   def update
+    pothole = Pothole.find params[:pothole][:id]
+    pothole.update pothole_params
+    render plain: 'ok'
   end
 
   private

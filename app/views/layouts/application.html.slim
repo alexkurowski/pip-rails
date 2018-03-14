@@ -4,6 +4,8 @@ html
     title Potholes in Paradise
     = csrf_meta_tags
 
+    meta name='viewport' content='width=device-width, initial-scale=1'
+
     script src='https://maps.google.com/maps/api/js?key=#{ Rails.application.credentials.google_maps_api_key }'
     script src='https://cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js'
     / Uncomment this only if we need custom infoboxes

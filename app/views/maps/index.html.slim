@@ -2,6 +2,15 @@
   #gmap
 
   .gmap-overlay.hidden
-    .add-pothole.btn
-      .big-icon = fa_icon 'map-marker', class: 'fa-3x'
-      .label = t 'add_pothole'
+    .add-pothole-buttons
+      .add-pothole-new.without-new-marker.gmap-btn
+        .big-icon = fa_icon 'map-marker', class: 'fa-2x'
+        .label = t 'add_pothole.new'
+
+      .add-pothole-submit.with-new-marker.gmap-btn.square
+        .big-icon.green = fa_icon 'check', class: 'fa-2x'
+        .label = t 'add_pothole.submit'
+
+      .add-pothole-cancel.with-new-marker.gmap-btn.square
+        .big-icon.red = fa_icon 'times', class: 'fa-2x'
+        .label = t 'add_pothole.cancel'
