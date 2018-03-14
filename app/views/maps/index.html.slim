@@ -6,6 +6,11 @@
   ]
 
   .gmap-overlay.hidden
+    .show-fixed-toggle-container
+      span = t 'show_fixed_toggle'
+      input#show-fixed-toggle.show-fixed-toggle.tgl.tgl-ios type="checkbox"
+      label.tgl-btn for="show-fixed-toggle"
+
     .add-pothole-buttons
       .add-pothole-new.without-new-marker.gmap-btn
         .big-icon = fa_icon 'map-marker', class: 'fa-2x'
