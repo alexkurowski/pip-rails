@@ -83,11 +83,20 @@ window.addEventListener('load', function () {
           return {
             lat: pothole.lat,
             lng: pothole.lng,
+            picture: {
+              url: mapEl.dataset.icon,
+              width: 64,
+              height: 43
+            },
             infowindow: "<div class='info-btn' data-not-fixed>Still Here</div>" +
                         "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>",
 
             id: pothole.id,
-            label: pothole.label,
+            label: {
+              text: pothole.label,
+              color: 'white',
+              fontWeight: 'bold'
+            }
           }
         });
 
