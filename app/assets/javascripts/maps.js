@@ -144,7 +144,7 @@ window.addEventListener('load', function () {
       timeEnd = new Date(marker.pothole.fixedAt * 1000);
     }
 
-    var time = timeEnd - timeStart;
+    var time = Math.max(0, timeEnd - timeStart);
 
     var days    = Math.floor( time / day );
     var hours   = Math.floor( ( time - days * day ) / hour );
