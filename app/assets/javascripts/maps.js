@@ -9,11 +9,13 @@ window.addEventListener('load', function () {
   if (!mapEl) return;
 
 
-  var markers = [];
-  var newMarker = null;
+  var markers               = [];
+  var newMarker             = null;
   var loadingMarkersTimeout = null;
-  var loadMarkersDelay = 500;
-  var showFixedPotholes = false;
+  var loadMarkersDelay      = 500;
+  var updateHashTimeout     = null;
+  var updateHashDelay       = 500;
+  var showFixedPotholes     = false;
 
   /*
    * Marker context menu actions
@@ -69,6 +71,15 @@ window.addEventListener('load', function () {
       lng: +lng
     });
     loadMarkers();
+  }
+
+  function updateAddressHash () {
+    if (!map) return;
+
+    window.location.hash =
+      map.center.lat() + ',' +
+      map.center.lng() + ',' +
+      map.zoom;
   }
 
   function parsePotholes (data) {
@@ -309,6 +320,51 @@ window.addEventListener('load', function () {
 
       mapOverlayEl.classList.remove('hidden');
 
+      // Update pothole markers on viewport change
+      map.addListener('bounds_changed', function () {
+        if (loadingMarkersTimeout)
+          clearTimeout(loadingMarkersTimeout);
+        loadingMarkersTimeout =
+          setTimeout(loadMarkers, loadMarkersDelay);
+
+        if (updateHashTimeout)
+          clearTimeout(updateHashTimeout);
+        updateHashTimeout =
+          setTimeout(updateAddressHash, updateHashDelay);
+      });
+
+      // Create a draggable marker on click
+      map.addListener('click', function (event) {
+        createNewMarker(
+          event.latLng.lat(),
+          event.latLng.lng()
+        );
+      });
+
+      if (window.location.hash) {
+        try {
+          var coords = window
+            .location
+            .hash
+            .substr(1)
+            .split(',')
+            .map(function (val) {
+              return Number(val)
+            });
+
+          if ( !isNaN(coords[0]) &&
+               !isNaN(coords[1]) ) {
+            moveViewport(coords[0], coords[1]);
+            if ( !isNaN(coords[2]) ) {
+              map.setZoom(coords[2]);
+            }
+            return;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
       // Move viewport to visitor's geo location
       if (navigator.geolocation) {
         navigator
@@ -332,23 +388,6 @@ window.addEventListener('load', function () {
           mapEl.dataset.fallbackLng
         );
       }
-
-      // Update pothole markers on viewport change
-      map.addListener('bounds_changed', function () {
-        if (loadingMarkersTimeout)
-          clearTimeout(loadingMarkersTimeout);
-
-        loadingMarkersTimeout =
-          setTimeout(loadMarkers, loadMarkersDelay);
-      });
-
-      // Create a draggable marker on click
-      map.addListener('click', function (event) {
-        createNewMarker(
-          event.latLng.lat(),
-          event.latLng.lng()
-        );
-      });
     }
   );
 
