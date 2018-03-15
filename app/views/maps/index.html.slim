@@ -14,10 +14,16 @@
   ]
 
   .gmap-overlay.hidden
-    .show-fixed-toggle-container
-      span = t 'show_fixed_toggle'
-      input#show-fixed-toggle.tgl.tgl-ios type="checkbox"
-      label.tgl-btn for="show-fixed-toggle"
+    .toggle-container
+      .show-unfixed-toggle.toggle
+        span = t 'show_unfixed_toggle'
+        input#show-unfixed-toggle.tgl.tgl-ios type="checkbox" checked="true"
+        label.tgl-btn.red for="show-unfixed-toggle"
+
+      .show-fixed-toggle.toggle
+        span = t 'show_fixed_toggle'
+        input#show-fixed-toggle.tgl.tgl-ios type="checkbox"
+        label.tgl-btn.green for="show-fixed-toggle"
 
     .add-pothole-buttons
       .add-pothole-new.without-new-marker.gmap-btn

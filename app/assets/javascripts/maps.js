@@ -16,6 +16,7 @@ window.addEventListener('load', function () {
   var loadMarkersDelay      = 500;
   var updateHashTimeout     = null;
   var updateHashDelay       = 500;
+  var showUnfixedPotholes   = true;
   var showFixedPotholes     = false;
 
   /*
@@ -202,6 +203,7 @@ window.addEventListener('load', function () {
 
   function loadMarkers () {
     var data = map.getBounds().toJSON();
+    data.unfixed = showUnfixedPotholes;
     data.fixed = showFixedPotholes;
 
     Rails.ajax({
@@ -435,6 +437,11 @@ window.addEventListener('load', function () {
   /*
    * Initialize buttons functionality
    */
+  $('#show-unfixed-toggle').on('change', function (event) {
+    showUnfixedPotholes = !showUnfixedPotholes;
+    loadMarkers();
+  });
+
   $('#show-fixed-toggle').on('change', function (event) {
     showFixedPotholes = !showFixedPotholes;
     loadMarkers();

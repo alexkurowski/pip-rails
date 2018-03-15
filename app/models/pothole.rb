@@ -6,10 +6,17 @@ class Pothole < ApplicationRecord
   acts_as_mappable lat_column_name: :latitude,
                    lng_column_name: :longitude
 
+  def self.excluding_unfixed exclude
+    if exclude
+    then self.where.not(fixed_at: nil)
+    else self.all
+    end
+  end
+
   def self.excluding_fixed exclude
     if exclude
     then self.where(fixed_at: nil)
-    else self
+    else self.all
     end
   end
 

@@ -79,7 +79,14 @@
   }
 
   &:checked + .tgl-btn {
-    background: #86d993;
+    &.red {
+      background: #d98686;
+    }
+
+    &.green {
+      background: #86d993;
+    }
+
     &:active {
       box-shadow: none;
       &:after {

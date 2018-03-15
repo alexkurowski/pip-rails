@@ -28,19 +28,25 @@
       .with-new-marker
         display: none
 
-  .show-fixed-toggle-container
+  .toggle-container
     display: flex
-    align-items: center
+    flex-direction: column
+    align-items: flex-end
     position: fixed
     right: 15px
     top: 1rem
     font-size: 0.75rem
 
-    span
-      margin-right: .5em
-      color: #666
-      text-shadow: 0 1px white
-      cursor: default
+    > div
+      display: flex
+      align-items: center
+      margin-bottom: .5rem
+
+      span
+        margin-right: .5em
+        color: #666
+        text-shadow: 0 1px white
+        cursor: default
 
   .add-pothole-buttons
     display: flex

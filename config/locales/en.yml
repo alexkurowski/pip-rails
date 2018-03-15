@@ -1,4 +1,5 @@
 en:
+  show_unfixed_toggle: "Unfixed Potholes:"
   show_fixed_toggle: "Fixed Potholes:"
   add_pothole:
     new: Add Pothole
