@@ -18,13 +18,14 @@ class Pothole < ApplicationRecord
       .in_bounds(bounds)
       .map do |pothole|
         {
-          'id': pothole.id,
-          'lat': pothole.latitude,
-          'lng': pothole.longitude,
-          'category': pothole.category,
-          'label': pothole.time_unfixed_label,
+          'id':         pothole.id,
+          'lat':        pothole.latitude,
+          'lng':        pothole.longitude,
+          'category':   pothole.category,
+          'createdAt':  pothole.created_at.to_f,
+          'fixedAt':    pothole.fixed_at.to_f,
           'alertLevel': pothole.alert_level,
-          'fixed': !pothole.fixed_at.nil?
+          'fixed':      !pothole.fixed_at.nil?
         }
       end
   end
@@ -32,18 +33,6 @@ class Pothole < ApplicationRecord
   def time_unfixed
     end_time = fixed_at || Time.now
     end_time - created_at
-  end
-
-  def time_unfixed_label
-    time = time_unfixed.to_i.round
-    days = time / 1.day
-    hours = ( time - days * 1.day ) / 1.hour
-    minutes = ( time - days * 1.day - hours * 1.hour ) / 1.minute
-
-    if days <= 99
-    then "%02d:%02d:%02d" % [days, hours, minutes]
-    else "%d days" % days
-    end
   end
 
   def alert_level

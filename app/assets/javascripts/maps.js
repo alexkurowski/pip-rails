@@ -103,13 +103,49 @@ window.addEventListener('load', function () {
 
           id: pothole.id,
           label: {
-            text: pothole.label,
+            text: '',
             color: 'white',
             fontSize: '13px',
             fontWeight: 'bold'
-          }
+          },
+          createdAt: pothole.createdAt,
+          fixedAt:   pothole.fixedAt,
+          fixed:     pothole.fixed
         }
       })
+  }
+
+  function updateLabel (marker) {
+    var day = 86400000;
+    var hour = 3600000;
+    var minute = 60000;
+
+    var pad = function (val) {
+      if (val < 10)
+        return '0' + val;
+      else
+        return val;
+    }
+
+    var timeStart = new Date(marker.pothole.createdAt * 1000);
+    var timeEnd   = new Date();
+    if (marker.pothole.fixed) {
+      timeEnd = new Date(marker.pothole.fixedAt * 1000);
+    }
+
+    var time = timeEnd - timeStart;
+
+    var days    = Math.floor( time / day );
+    var hours   = Math.floor( ( time - days * day ) / hour );
+    var minutes = Math.floor( ( time - days * day - hours * hour ) / minute );
+
+    if (days <= 99) {
+      marker.pothole.label.text = pad(days) + ':' + pad(hours) + ':' + pad(minutes);
+    } else {
+      marker.pothole.label.text = days + ' days';
+    }
+
+    marker.serviceObject.setLabel(marker.pothole.label);
   }
 
   function loadMarkers () {
@@ -150,7 +186,14 @@ window.addEventListener('load', function () {
         var addedMarkers = gmapHandler.addMarkers(markersToAdd);
         addedMarkers.forEach(function (marker, index) {
           marker.id = markersToAdd[index].id;
-          marker.serviceObject.setLabel(markersToAdd[index].label);
+          marker.pothole = markersToAdd[index];
+
+          updateLabel(marker);
+
+          marker.labelInterval =
+            setInterval(function () {
+              updateLabel(marker);
+            }, 10000);
         });
 
         // Update markers list
@@ -169,6 +212,11 @@ window.addEventListener('load', function () {
 
   function removeMarker (marker) {
     if (marker && marker.serviceObject) {
+      if (marker.labelInterval) {
+        clearInterval(marker.labelInterval);
+        marker.labelInterval = null;
+      }
+
       marker.serviceObject.setVisible(false);
       marker.serviceObject.setMap(null);
       marker.serviceObject = null;
