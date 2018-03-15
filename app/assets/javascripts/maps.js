@@ -9,6 +9,7 @@ window.addEventListener('load', function () {
   if (!mapEl) return;
 
 
+  var potholes              = [];
   var markers               = [];
   var newMarker             = null;
   var loadingMarkersTimeout = null;
@@ -20,10 +21,48 @@ window.addEventListener('load', function () {
   /*
    * Marker context menu actions
    */
-  function potholeNotFixed () {
+  function findPothole (id) {
+    return potholes.find(function (pothole) {
+      return pothole.id == id;
+    });
+  }
+
+  function potholeNotFixed (id) {
+    var pothole = findPothole(id);
+    if (!pothole.fixed) return;
+
+    var data = {
+      pothole: {
+        id: id,
+        fixed_at: null
+      }
+    }
+
+    Rails.ajax({
+      type: 'PUT',
+      url: '/potholes',
+      data: $.param(data),
+      success: function (response) {
+        var marker = markers.find(function (marker) {
+          return marker.id == id;
+        })
+
+        if (marker) {
+          removeMarker(marker);
+          marker.id = null;
+          setTimeout(loadMarkers, loadMarkersDelay);
+        }
+      },
+      error: function (response) {
+        console.log("Error occured while updating a pothole record", response);
+      }
+    });
   }
 
   function potholeFixed (id) {
+    var pothole = findPothole(id);
+    if (pothole.fixed) return;
+
     var data = {
       pothole: {
         id: id,
@@ -42,12 +81,14 @@ window.addEventListener('load', function () {
 
         if (marker) {
           removeMarker(marker);
+          marker.id = null;
+          setTimeout(loadMarkers, loadMarkersDelay);
         }
       },
       error: function (response) {
         console.log("Error occured while updating a pothole record", response);
       }
-    })
+    });
   }
 
   $('#gmap').on('click', '.info-btn', function () {
@@ -55,7 +96,7 @@ window.addEventListener('load', function () {
       potholeFixed(this.dataset.record);
     } else
     if (this.dataset.hasOwnProperty('notFixed')) {
-      potholeNotFixed();
+      potholeNotFixed(this.dataset.record);
     }
 
     var parent = this.parentNode.parentNode.parentNode.parentNode;
@@ -92,9 +133,9 @@ window.addEventListener('load', function () {
 
     var getInfowindow = function (pothole) {
       if (pothole.fixed) {
-        return undefined;
+        return "<div class='info-btn' data-not-fixed data-record='" + pothole.id + "'>Still Here</div>";
       } else {
-        return "<div class='info-btn' data-not-fixed>Still Here</div>" +
+        return "<div class='info-btn' data-not-fixed data-record='" + pothole.id + "'>Still Here</div>" +
                "<div class='info-btn' data-fixed data-record='" + pothole.id + "'>Pothole Fixed</div>";
       }
     }
@@ -168,7 +209,7 @@ window.addEventListener('load', function () {
       url: '/potholes/in_bounds',
       data: $.param(data),
       success: function (response) {
-        var potholes = parsePotholes(response);
+        potholes = parsePotholes(response);
 
         var oldMarkerIds =
           markers.map(function (marker) {
