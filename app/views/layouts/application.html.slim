@@ -4,7 +4,13 @@ html
     title Potholes in Paradise
     = csrf_meta_tags
 
-    meta name='viewport' content='width=device-width, initial-scale=1'
+    meta name='viewport' content='
+      width=device-width,
+      height=device-height,
+      initial-scale=1.0,
+      minimum-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no'
 
     script src='https://maps.google.com/maps/api/js?key=#{ Rails.application.credentials.google_maps_api_key }'
     script src='https://cdn.rawgit.com/mahnunchik/markerclustererplus/master/dist/markerclusterer.min.js'
