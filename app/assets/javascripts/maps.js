@@ -409,11 +409,11 @@ window.addEventListener('load', function () {
         }
       }
 
-      // Move viewport to visitor's geo location
       if (navigator.geolocation) {
+        // Continuously watch visitor's geo location
         navigator
           .geolocation
-          .getCurrentPosition(
+          .watchPosition(
             function (position) {
               moveViewport(
                 position.coords.latitude,
@@ -425,8 +425,12 @@ window.addEventListener('load', function () {
                 mapEl.dataset.fallbackLat,
                 mapEl.dataset.fallbackLng
               );
+            },
+            {
+              enableHighAccuracy: true
             });
       } else {
+        // Fallback to remote ip geocode
         moveViewport(
           mapEl.dataset.fallbackLat,
           mapEl.dataset.fallbackLng
