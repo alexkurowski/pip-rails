@@ -1,5 +1,6 @@
 {
   "name": "potholes",
+  "engine": { "node": "9.8.0" },
   "private": true,
   "dependencies": {
     "chart.js": "^2.7.2",
