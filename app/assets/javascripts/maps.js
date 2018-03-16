@@ -351,6 +351,7 @@ window.addEventListener('load', function () {
       provider: {
         disableDefaultUI: true,
         zoom: 16,
+        minZoom: 12,
         zoomControl: true,
         styles: styles,
       },
