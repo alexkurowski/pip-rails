@@ -1,7 +1,11 @@
 en:
-  show_unfixed_toggle: "Unfixed Potholes:"
-  show_fixed_toggle: "Fixed Potholes:"
-  add_pothole:
-    new: Add Pothole
-    submit: Place it!
-    cancel: Cancel
+  gmap:
+    show_unfixed_toggle: "Unfixed Potholes:"
+    show_fixed_toggle: "Fixed Potholes:"
+    show_statistics: Show Statistics
+    statistics:
+      header: STATISTICS FOR THIS AREA
+    add_pothole:
+      new: Add Pothole
+      submit: Place it!
+      cancel: Cancel

@@ -447,6 +447,82 @@ window.addEventListener('load', function () {
     loadMarkers();
   });
 
+  $('.show-statistics').on('click', function (event) {
+    document
+      .querySelector('.gmap .gmap-statistics')
+      .classList
+      .remove('hidden');
+
+    var gatherData = function (name, color, fixed) {
+      var result = {
+        name: name,
+        color: color,
+        fill: false,
+        data: []
+      };
+
+      var week = 604800000;
+      var dataset =
+        potholes
+          .filter(function (pothole) {
+            return pothole.fixed == fixed;
+          })
+          .reduce(function (data, pothole) {
+            var timeStart = pothole.createdAt * 1000;
+            var timeEnd   = Date.now();
+            if (pothole.fixed) {
+              timeEnd = pothole.fixedAt * 1000;
+            }
+
+            var time = Math.max(0, timeEnd - timeStart);
+            var key  = Math.floor( time / week );
+
+            data[key] = data[key] && data[key] + 1 || 1;
+
+            return data;
+          }, {});
+
+      for (var weeksOld in dataset) {
+        var key;
+        if (weeksOld == 1)
+          key = weeksOld + " week old";
+        else
+          key = weeksOld + " weeks old";
+
+        result.data.push([key, dataset[weeksOld]]);
+      }
+
+      return result;
+    }
+
+    var data = [];
+    if (showUnfixedPotholes)
+      data.push(gatherData('# of unfixed potholes', '#d98686', false));
+
+    if (showFixedPotholes)
+      data.push(gatherData('# of fixed potholes', '#86d993', true));
+
+    if (window.innerWidth > window.innerHeight)
+      new Chartkick.ColumnChart('statistics-chart', data, {
+        xtitle: 'Weeks old',
+        ytitle: '# of potholes'
+      });
+    else
+      new Chartkick.BarChart('statistics-chart', data, {
+        xtitle: '# of potholes',
+        ytitle: 'Weeks old'
+      });
+  });
+
+  $('.gmap-statistics').on('click', function (event) {
+    if ( event.target.classList.contains('hide-statistics') ) {
+      document
+        .querySelector('.gmap .gmap-statistics')
+        .classList
+        .add('hidden');
+    }
+  });
+
   $('.add-pothole-new').on('click', function (event) {
     event.preventDefault();
 

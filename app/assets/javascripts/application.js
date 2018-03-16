@@ -15,4 +15,6 @@
 //= require activestorage
 //= require underscore
 //= require gmaps/google
+//= require chartkick/dist/chartkick.min.js
+//= require chart.js/dist/Chart.min.js
 //= require_tree .

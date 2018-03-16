@@ -16,24 +16,33 @@
   .gmap-overlay.hidden
     .toggle-container
       .show-unfixed-toggle.toggle
-        span = t 'show_unfixed_toggle'
+        span.label = t 'gmap.show_unfixed_toggle'
         input#show-unfixed-toggle.tgl.tgl-ios type="checkbox" checked="true"
         label.tgl-btn.red for="show-unfixed-toggle"
 
       .show-fixed-toggle.toggle
-        span = t 'show_fixed_toggle'
+        span.label = t 'gmap.show_fixed_toggle'
         input#show-fixed-toggle.tgl.tgl-ios type="checkbox"
         label.tgl-btn.green for="show-fixed-toggle"
 
+      .show-statistics.gmap-btn
+        span = t 'gmap.show_statistics'
+
     .add-pothole-buttons
-      .add-pothole-new.without-new-marker.gmap-btn
+      .add-pothole-new.without-new-marker.gmap-btn.rectangle
         .big-icon = fa_icon 'map-marker', class: 'fa-2x'
-        .label = t 'add_pothole.new'
+        .label = t 'gmap.add_pothole.new'
 
       .add-pothole-submit.with-new-marker.gmap-btn.square
         .big-icon.green = fa_icon 'check', class: 'fa-2x'
-        .label = t 'add_pothole.submit'
+        .label = t 'gmap.add_pothole.submit'
 
       .add-pothole-cancel.with-new-marker.gmap-btn.square
         .big-icon.red = fa_icon 'times', class: 'fa-2x'
-        .label = t 'add_pothole.cancel'
+        .label = t 'gmap.add_pothole.cancel'
+
+  .gmap-statistics.hidden.hide-statistics
+    .sidebar
+      .hide-statistics.btn = fa_icon 'times', class: 'hide-statistics'
+      .header = t 'gmap.statistics.header'
+      #statistics-chart

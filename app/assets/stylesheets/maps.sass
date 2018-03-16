@@ -42,11 +42,14 @@
       align-items: center
       margin-bottom: .5rem
 
-      span
+      .label
         margin-right: .5em
         color: #666
         text-shadow: 0 1px white
         cursor: default
+
+    .gmap-btn.show-statistics
+      padding: .5rem
 
   .add-pothole-buttons
     display: flex
@@ -54,14 +57,22 @@
     right: 38px
     bottom: 1.5rem
 
+    .gmap-btn
+      margin-right: 10px
+
+    .gmap-btn.rectangle
+      width: 76px
+      height: 55px
+
+    .gmap-btn.square
+      width: 55px
+      height: 55px
+
   .gmap-btn
     display: flex
     flex-direction: column
     justify-content: center
     align-items: center
-    width: 76px
-    height: 55px
-    margin-right: 10px
     color: #666
     background: #fff
     border-radius: 5px
@@ -75,9 +86,6 @@
     &:hover
       color: #333
       box-shadow: 0 1px 4px -1px rgba( black, 1 )
-
-    &.square
-      width: 55px
 
     .big-icon
       text-align: center
@@ -107,6 +115,47 @@
         left: 0
         top: 0
         padding: .5rem 0
+
+  .gmap-statistics
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background: rgba(0, 0, 0, 0.2)
+    transition: left .3s
+    z-index: 200
+
+    &.hidden
+      left: 100%
+
+    .sidebar
+      background: white
+      min-height: 100%
+      padding: 2rem
+      margin-left: 5%
+      box-shadow: 8px 0 8px 8px black
+
+      .hide-statistics.btn
+        float: left
+        padding: 1rem
+        margin: -1rem
+        line-height: 1.65rem
+        cursor: pointer
+        color: #666
+
+        &:hover
+          color: #333
+
+      .header
+        font-size: 1.25rem
+        font-weight: bold
+        text-align: center
+        margin-bottom: 1rem
+
+      #statistics-chart
+        height: 60vh
+
 
   a[href^="http://maps.google.com/maps"],
   a[href^="https://maps.google.com/maps"],
