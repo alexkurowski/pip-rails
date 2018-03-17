@@ -153,8 +153,13 @@
         text-align: center
         margin-bottom: 1rem
 
-      #statistics-chart
-        height: 60vh
+      @media (orientation: landscape)
+        #statistics-chart
+          height: 60vh
+
+      @media (orientation: portrait)
+        #statistics-chart
+          height: 80vh
 
 
   a[href^="http://maps.google.com/maps"],

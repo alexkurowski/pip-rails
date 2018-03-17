@@ -463,7 +463,10 @@ window.addEventListener('load', function () {
         name: name,
         color: color,
         fill: false,
-        data: []
+        data: [],
+        library: {
+          borderWidth: 1
+        }
       };
 
       var week = 604800000;
@@ -502,20 +505,46 @@ window.addEventListener('load', function () {
 
     var data = [];
     if (showUnfixedPotholes)
-      data.push(gatherData('# of unfixed potholes', '#d98686', false));
+      data.push(gatherData('# of unfixed potholes', '#f93b3b', false));
 
     if (showFixedPotholes)
-      data.push(gatherData('# of fixed potholes', '#86d993', true));
+      data.push(gatherData('# of fixed potholes', '#32ef66', true));
 
-    if (window.innerWidth > window.innerHeight)
+    var verticalChart = window.innerWidth > window.innerHeight;
+
+    var libraryOptions = {
+      scales: {
+        xAxes: [{
+          maxBarThickness: 64,
+          gridLines: {
+            drawBorder: verticalChart,
+            drawOnChartArea: !verticalChart,
+            offsetGridLines: false
+          }
+        }],
+        yAxes: [{
+          maxBarThickness: 64,
+          gridLines: {
+            drawBorder: !verticalChart,
+            drawOnChartArea: verticalChart,
+            offsetGridLines: false
+          }
+        }]
+      },
+      animation: {
+        duration: 1400
+      }
+    };
+
+    if (verticalChart)
       new Chartkick.ColumnChart('statistics-chart', data, {
-        xtitle: 'Weeks old',
-        ytitle: '# of potholes'
+        ytitle: '# of potholes',
+        library: libraryOptions
       });
     else
       new Chartkick.BarChart('statistics-chart', data, {
         xtitle: '# of potholes',
-        ytitle: 'Weeks old'
+        library: libraryOptions
       });
   });
 
