@@ -1,5 +1,5 @@
 class MapsController < ApplicationController
   def index
-    @fallback_location = Geokit::Geocoders::GoogleGeocoder.geocode request.remote_ip
+    @fallback_location = request&.location&.data || {}
   end
 end

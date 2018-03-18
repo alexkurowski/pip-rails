@@ -9,8 +9,8 @@
     data-icon-red-2='#{ asset_url 'icon-square-red-2.png' }'
     data-icon-red-3='#{ asset_url 'icon-square-red-3.png' }'
     data-icon-red-4='#{ asset_url 'icon-square-red-4.png' }'
-    data-fallback-lat='#{ @fallback_location&.lat || -28.647 }'
-    data-fallback-lng='#{ @fallback_location&.lng || 153.618 }'
+    data-fallback-lat='#{ @fallback_location['latitude']  || -28.647 }'
+    data-fallback-lng='#{ @fallback_location['longitude'] || 153.618 }'
   ]
 
   .gmap-overlay.hidden

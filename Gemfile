@@ -45,6 +45,7 @@ gem 'underscore-rails'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # Geokit plugin for ActiveRecord
+gem 'geocoder'
 gem 'geokit-rails'
 # Google maps API helper
 gem 'gmaps4rails'
